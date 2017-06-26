@@ -41,6 +41,7 @@
 namespace svile\sw;
 
 
+use pocketmine\entity\Living;
 use pocketmine\event\Listener;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -391,7 +392,7 @@ class SWlistener implements Listener
                                 $d = $ev->getDamager();
                                 if ($d instanceof Player)
                                     $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getDisplayName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.player'])));
-                                elseif ($d instanceof \pocketmine\entity\Living)
+                                elseif ($d instanceof   Living)
                                     $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getNameTag() !== '' ? $d->getNameTag() : $d->getName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.player'])));
                                 else
                                     $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', 'Unknown', str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.player'])));
@@ -404,7 +405,7 @@ class SWlistener implements Listener
                                 $d = $ev->getDamager();
                                 if ($d instanceof Player)
                                     $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getDisplayName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.arrow'])));
-                                elseif ($d instanceof \pocketmine\entity\Living)
+                                elseif ($d instanceof Living)
                                     $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getNameTag() !== '' ? $d->getNameTag() : $d->getName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.arrow'])));
                                 else
                                     $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', 'Unknown', str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.arrow'])));
@@ -443,8 +444,8 @@ class SWlistener implements Listener
 
     public function onDamage(EntityDamageEvent $ev)
     {
-        if ($ev->getEntity() instanceof Player) {
-            $p = $ev->getEntity();
+        $p = $ev->getEntity();
+        if ($p instanceof Player) {;
             foreach ($this->pg->arenas as $a) {
                 if ($f = $a->inArena($p->getName())) {
                     if ($f != 1) {
@@ -452,6 +453,7 @@ class SWlistener implements Listener
                         break;
                     }
                     if ($ev instanceof EntityDamageByEntityEvent && ($d = $ev->getDamager()) instanceof Player) {
+                        /** @var $d Player */
                         if (($f = $a->inArena($d->getName())) == 2 || $f == 0) {
                             $ev->setCancelled();
                             break;
@@ -483,7 +485,7 @@ class SWlistener implements Listener
                                         $d = $ev->getDamager();
                                         if ($d instanceof Player)
                                             $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getDisplayName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.player'])));
-                                        elseif ($d instanceof \pocketmine\entity\Living)
+                                        elseif ($d instanceof Living)
                                             $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getNameTag() !== '' ? $d->getNameTag() : $d->getName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.player'])));
                                         else
                                             $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', 'Unknown', str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.player'])));
@@ -496,7 +498,7 @@ class SWlistener implements Listener
                                         $d = $ev->getDamager();
                                         if ($d instanceof Player)
                                             $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getDisplayName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.arrow'])));
-                                        elseif ($d instanceof \pocketmine\entity\Living)
+                                        elseif ($d instanceof Living)
                                             $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', $d->getNameTag() !== '' ? $d->getNameTag() : $d->getName(), str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.arrow'])));
                                         else
                                             $message = str_replace('{COUNT}', $count, str_replace('{KILLER}', 'Unknown', str_replace('{PLAYER}', $p->getDisplayName(), $this->pg->lang['death.arrow'])));

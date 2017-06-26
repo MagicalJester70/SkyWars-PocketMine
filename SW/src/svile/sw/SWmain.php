@@ -41,6 +41,7 @@
 namespace svile\sw;
 
 
+use pocketmine\level\Level;
 use pocketmine\plugin\PluginBase;
 
 use pocketmine\command\CommandSender;
@@ -60,6 +61,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\item\Item;
 use pocketmine\tile\Sign;
 use pocketmine\math\Vector3;
+use svile\sw\utils\SWeconomy;
 
 
 class SWmain extends PluginBase
@@ -79,7 +81,7 @@ class SWmain extends PluginBase
     public $lang;
     /** @var \SQLite3 */
     private $db;
-    /** @var \svile\sw\utils\SWeconomy */
+    /** @var SWeconomy */
     public $economy;
 
 
@@ -246,7 +248,7 @@ class SWmain extends PluginBase
         $this->commands = new SWcommands($this);
         if ($this->configs['reward.winning.players']) {
             //\svile\sw\utils\SWeconomy
-            $this->economy = new \svile\sw\utils\SWeconomy($this);
+            $this->economy = new SWeconomy($this);
             if ($this->economy->getApiVersion()) {
                 $this->getLogger()->info('§aUsing: §f' . $this->economy->getApiVersion(true) . '§a as economy api');
             } else {
@@ -395,7 +397,7 @@ class SWmain extends PluginBase
             foreach ($this->signs as $key => $val) {
                 $ex = explode(':', $key);
                 $this->getServer()->loadLevel($ex[0b11]);
-                if ($this->getServer()->getLevelByName($ex[0b11]) instanceof \pocketmine\level\Level) {
+                if ($this->getServer()->getLevelByName($ex[0b11]) instanceof Level) {
                     $tile = $this->getServer()->getLevelByName($ex[0b11])->getTile(new Vector3($ex[0], $ex[1], $ex[2]));
                     if ($tile instanceof Sign) {
                         $text = $tile->getText();

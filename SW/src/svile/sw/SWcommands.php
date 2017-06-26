@@ -44,6 +44,9 @@ namespace svile\sw;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
 
+use pocketmine\command\ConsoleCommandSender;
+use pocketmine\level\format\io\BaseLevelProvider;
+use pocketmine\network\mcpe\protocol\TextPacket;
 use pocketmine\Player;
 
 use pocketmine\utils\TextFormat;
@@ -75,6 +78,7 @@ class SWcommands
      * @param array $args
      * @return bool
      */
+    /** @noinspection PhpUnusedParameterInspection */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args)
     {
         if (!($sender instanceof Player) || !$sender->isOp()) {
@@ -106,7 +110,7 @@ class SWcommands
                     }
 
                     $player = TextFormat::clean(array_shift($args));
-                    if (strlen($player) > 0 && $sender instanceof \pocketmine\command\ConsoleCommandSender) {
+                    if (strlen($player) > 0 && $sender instanceof ConsoleCommandSender) {
                         $p = $sender->getServer()->getPlayer($player);
                         if ($p instanceof Player) {
                             if ($this->pg->inArena($p->getName())) {
@@ -253,7 +257,7 @@ class SWcommands
                 } else {
                     $sender->sendMessage(TextFormat::WHITE . '→' . TextFormat::RED . 'There is a problem with the world name, try to restart your server');
                     $provider = $sender->getLevel()->getProvider();
-                    if ($provider instanceof \pocketmine\level\format\io\BaseLevelProvider) {
+                    if ($provider instanceof BaseLevelProvider) {
                         $provider->getLevelData()->LevelName = new Str('LevelName', $fworld);
                         $provider->saveLevelData();
                     }
@@ -263,7 +267,7 @@ class SWcommands
 
                 //Air world generator
                 $provider = $sender->getLevel()->getProvider();
-                if ($this->pg->configs['world.generator.air'] && $provider instanceof \pocketmine\level\format\io\BaseLevelProvider) {
+                if ($this->pg->configs['world.generator.air'] && $provider instanceof BaseLevelProvider) {
                     $provider->getLevelData()->generatorName = new Str('generatorName', 'flat');
                     $provider->getLevelData()->generatorOptions = new Str('generatorOptions', '0;0;0');
                     $provider->saveLevelData();
@@ -271,8 +275,8 @@ class SWcommands
 
                 //$sender->sendMessage(TextFormat::AQUA . '→' . TextFormat::LIGHT_PURPLE . 'I\'m creating a backup of the world...teleporting to hub');
                 //TODO: Remove this (pmmp messages queue)
-                $pk = new \pocketmine\network\protocol\TextPacket();
-                $pk->type = \pocketmine\network\protocol\TextPacket::TYPE_RAW;
+                $pk = new TextPacket();
+                $pk->type = TextPacket::TYPE_RAW;
                 $pk->message = TextFormat::AQUA . '→' . TextFormat::LIGHT_PURPLE . 'I\'m creating a backup of the world ' . TextFormat::AQUA . $world . TextFormat::LIGHT_PURPLE . ', do not move';
                 $sender->dataPacket($pk);
 
